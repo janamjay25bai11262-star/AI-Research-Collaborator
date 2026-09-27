@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Research Collaborator — Smart Research Matchmaker & Paper Recommender</title>
+  <meta name="description" content="AI-powered matchmaking platform for researchers and arXiv paper recommendations using vector embeddings and cosine similarity.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+  <!-- Site Header with Glassmorphic Blur -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand" onclick="app.switchTab('matchmaker')">
+        <div class="brand-icon">⚡</div>
+        <div>
+          <h1 class="brand-title">AI Research Collaborator</h1>
+          <p class="brand-subtitle">Vector Matchmaking & Paper Discovery</p>
+        </div>
+      </div>
+
+      <!-- Live Dataset Metrics Ticker -->
+      <div class="header-stats" id="header-stats">
+        <div class="stat-pill">
+          <span class="stat-dot"></span>
+          <span id="stat-papers"><strong>10,000</strong> Papers</span>
+        </div>
+        <div class="stat-pill">
+          <span>👥 <strong id="stat-researchers">374</strong> Researchers</span>
+        </div>
+        <div class="stat-pill">
+          <span>🧠 <strong id="stat-dims">384-dim</strong> Vectors</span>
+        </div>
+      </div>
+
+      <!-- Header Actions -->
+      <div class="header-actions">
+        <button class="btn-saved-counter" onclick="app.switchTab('saved')" title="View Saved Bookmarks">
+          <span>⭐ Saved</span>
+          <span class="badge-counter" id="saved-counter">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Banner -->
+  <section class="hero-section">
+    <div class="hero-tagline">Semantic Intelligence for Academics</div>
+    <h2 class="hero-title">Connect with <span>Ideal Collaborators</span> & Tailored Papers</h2>
+    <p class="hero-desc">
+      Harnessing cosine similarity across 10,000+ arXiv research papers and dense vector embeddings to accelerate scientific discovery and collaborative research.
+    </p>
+  </section>
+
+  <!-- Navigation Tabs -->
+  <div class="tabs-nav-container">
+    <nav class="tabs-nav" role="tablist">
+      <button class="tab-btn active" id="tab-btn-matchmaker" onclick="app.switchTab('matchmaker')" role="tab">
+        <span class="tab-icon">👥</span>
+        <span>Collaborator Matchmaker</span>
+      </button>
+      <button class="tab-btn" id="tab-btn-recommender" onclick="app.switchTab('recommender')" role="tab">
+        <span class="tab-icon">📑</span>
+        <span>Paper Recommender</span>
+      </button>
+      <button class="tab-btn" id="tab-btn-explorer" onclick="app.switchTab('explorer')" role="tab">
+        <span class="tab-icon">🔬</span>
+        <span>Paper Explorer</span>
+      </button>
+      <button class="tab-btn" id="tab-btn-topic" onclick="app.switchTab('topic')" role="tab">
+        <span class="tab-icon">💡</span>
+        <span>Topic & Idea Matcher</span>
+      </button>
+      <button class="tab-btn" id="tab-btn-saved" onclick="app.switchTab('saved')" role="tab">
+        <span class="tab-icon">⭐</span>
+        <span>Shortlist & Saved</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- Main Views Container -->
+  <main class="main-container">
+
+    <!-- TAB 1: COLLABORATOR MATCHMAKER -->
+    <section id="view-matchmaker" class="tab-view active">
+      <div class="controls-bar">
+        <div class="search-input-group">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="researcher-search-input" class="search-input" placeholder="Search researcher by name or expertise (e.g. Bing Liu, NLP, Robotics)..." oninput="app.onResearcherSearch()">
+        </div>
+        <div class="filter-group">
+          <select id="researcher-category-filter" class="filter-select" onchange="app.onResearcherCategoryFilter()">
+            <option value="">All Categories</option>
+            <option value="cs.AI">cs.AI (Artificial Intelligence)</option>
+            <option value="cs.LG">cs.LG (Machine Learning)</option>
+            <option value="cs.CV">cs.CV (Computer Vision)</option>
+            <option value="cs.CL">cs.CL (Computation and Language)</option>
+            <option value="cs.HC">cs.HC (Human-Computer Interaction)</option>
+            <option value="cs.RO">cs.RO (Robotics)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Quick category pills -->
+      <div class="category-chips-bar" id="researcher-category-chips">
+        <button class="category-chip active" onclick="app.filterResearcherChip('')">All Domains</button>
+        <button class="category-chip" onclick="app.filterResearcherChip('cs.AI')">Artificial Intelligence</button>
+        <button class="category-chip" onclick="app.filterResearcherChip('cs.LG')">Machine Learning</button>
+        <button class="category-chip" onclick="app.filterResearcherChip('cs.CV')">Computer Vision</button>
+        <button class="category-chip" onclick="app.filterResearcherChip('cs.CL')">NLP / Language</button>
+        <button class="category-chip" onclick="app.filterResearcherChip('cs.RO')">Robotics</button>
+      </div>
+
+      <!-- Matchmaker Layout: Active Match View OR Grid View -->
+      <div id="matchmaker-active-container" style="display: none; margin-bottom: 2.5rem;">
+        <!-- Filled dynamically when matching a researcher -->
+      </div>
+
+      <div class="section-header-row">
+        <h3 class="section-title"><span>Researchers Directory</span></h3>
+        <span class="results-count" id="researcher-count">Loading researchers...</span>
+      </div>
+
+      <div class="cards-grid" id="researchers-grid">
+        <!-- Researcher cards rendered dynamically -->
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination-bar" id="researchers-pagination"></div>
+    </section>
+
+    <!-- TAB 2: RESEARCHER -> PAPER RECOMMENDER -->
+    <section id="view-recommender" class="tab-view">
+      <div class="controls-bar">
+        <div style="flex: 1; min-width: 300px;">
+          <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.35rem;">
+            Select Target Researcher:
+          </label>
+          <div style="display: flex; gap: 0.5rem;">
+            <select id="recommender-select-researcher" class="filter-select" style="flex: 1;" onchange="app.onRecommenderSelectChange()">
+              <option value="">Loading researchers...</option>
+            </select>
+            <button class="btn-primary" onclick="app.loadPaperRecommendations()">
+              <span>Recommend Papers</span> 🚀
+            </button>
+          </div>
+        </div>
+        <div class="filter-group" style="align-self: flex-end;">
+          <select id="recommender-category-filter" class="filter-select" onchange="app.loadPaperRecommendations()">
+            <option value="">All Categories</option>
+            <option value="cs.AI">cs.AI</option>
+            <option value="cs.LG">cs.LG</option>
+            <option value="cs.CV">cs.CV</option>
+            <option value="cs.CL">cs.CL</option>
+            <option value="cs.HC">cs.HC</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Active Researcher Overview Banner -->
+      <div id="recommender-researcher-banner" style="margin-bottom: 1.5rem; display: none;"></div>
+
+      <div class="section-header-row">
+        <h3 class="section-title"><span>Top Tailored Papers from arXiv</span></h3>
+        <span class="results-count" id="recommender-results-count">Select a researcher above</span>
+      </div>
+
+      <div class="papers-grid" id="recommender-papers-grid">
+        <!-- Recommended papers rendered dynamically -->
+      </div>
+    </section>
+
+    <!-- TAB 3: PAPER EXPLORER & SIMILARITY -->
+    <section id="view-explorer" class="tab-view">
+      <div class="controls-bar">
+        <div class="search-input-group">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="paper-search-input" class="search-input" placeholder="Search 10,000 arXiv papers by title or abstract keywords..." oninput="app.onPaperSearch()">
+        </div>
+        <div class="filter-group">
+          <select id="paper-category-filter" class="filter-select" onchange="app.onPaperCategoryFilter()">
+            <option value="">All Categories</option>
+            <option value="cs.AI">cs.AI</option>
+            <option value="cs.LG">cs.LG</option>
+            <option value="cs.CV">cs.CV</option>
+            <option value="cs.CL">cs.CL</option>
+            <option value="cs.HC">cs.HC</option>
+            <option value="cs.RO">cs.RO</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Active Paper Similarity Flyout / Alert -->
+      <div id="paper-similarity-alert" style="display: none; margin-bottom: 1.5rem;"></div>
+
+      <div class="section-header-row">
+        <h3 class="section-title"><span>ArXiv Corpus Papers</span></h3>
+        <span class="results-count" id="papers-count">Loading papers...</span>
+      </div>
+
+      <div class="papers-grid" id="papers-grid">
+        <!-- Paper cards rendered dynamically -->
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination-bar" id="papers-pagination"></div>
+    </section>
+
+    <!-- TAB 4: TOPIC & RESEARCH IDEA MATCHER -->
+    <section id="view-topic" class="tab-view">
+      <div class="topic-search-box">
+        <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text-main);">
+          💡 Enter Research Hypothesis or Idea
+        </h3>
+        <p style="font-size: 0.9rem; color: var(--text-subtle); margin-bottom: 1rem;">
+          Type any research query, abstract draft, or topic interest. The AI will compute semantic overlap to discover both ideal collaborators and existing relevant literature.
+        </p>
+        <textarea id="topic-input" class="topic-textarea" placeholder="e.g. Deep reinforcement learning for ramp metering and intelligent autonomous traffic control..."></textarea>
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+          <button class="btn-primary" onclick="app.executeTopicSearch()">
+            <span>Run Semantic Match</span> ✨
+          </button>
+          <div class="suggested-topics">
+            <span>Try sample topics:</span>
+            <button class="topic-tag-btn" onclick="app.fillTopicPrompt('Federated learning with differential privacy for distributed retail queries')">Federated Learning</button>
+            <button class="topic-tag-btn" onclick="app.fillTopicPrompt('Deep reinforcement learning for ramp metering and freeway traffic flows')">Traffic RL</button>
+            <button class="topic-tag-btn" onclick="app.fillTopicPrompt('Multimodal diffusion models for tangible embodied interaction')">Diffusion Models</button>
+            <button class="topic-tag-btn" onclick="app.fillTopicPrompt('Explainable AI for clinical decision support in healthcare')">Clinical XAI</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="topic-results-container" style="display: none;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;">
+          <div>
+            <div class="section-header-row">
+              <h3 class="section-title"><span>👥 Matched Collaborators</span></h3>
+              <span class="results-count" id="topic-researchers-count"></span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 1rem;" id="topic-researchers-list"></div>
+          </div>
+          <div>
+            <div class="section-header-row">
+              <h3 class="section-title"><span>📑 Matched arXiv Papers</span></h3>
+              <span class="results-count" id="topic-papers-count"></span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 1rem;" id="topic-papers-list"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: SAVED & SHORTLIST -->
+    <section id="view-saved" class="tab-view">
+      <div class="controls-bar">
+        <div>
+          <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--text-main);">⭐ Your Research Shortlist</h3>
+          <p style="font-size: 0.85rem; color: var(--text-subtle);">Researchers and papers bookmarked for collaborative proposals and literature reviews.</p>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+          <button class="btn-secondary" onclick="app.exportShortlist()">
+            <span>Export Shortlist (.JSON)</span> 📥
+          </button>
+          <button class="btn-secondary" onclick="app.clearSaved()">
+            <span>Clear All</span> 🗑️
+          </button>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;">
+        <div>
+          <div class="section-header-row">
+            <h4 class="section-title"><span>Saved Researchers</span></h4>
+            <span class="results-count" id="saved-researchers-count">0 saved</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 1rem;" id="saved-researchers-list">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+
+        <div>
+          <div class="section-header-row">
+            <h4 class="section-title"><span>Saved Papers</span></h4>
+            <span class="results-count" id="saved-papers-count">0 saved</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 1rem;" id="saved-papers-list">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Modal for Full Details & Abstract View -->
+  <div class="modal-overlay" id="detail-modal" onclick="app.closeModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <button class="modal-close-btn" onclick="app.closeModal()">✕</button>
+      <div id="modal-body">
+        <!-- Content filled dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <p>AI Research Collaborator Engine • Built with high-dimensional dense vector embeddings & cosine similarity.</p>
+  </footer>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
