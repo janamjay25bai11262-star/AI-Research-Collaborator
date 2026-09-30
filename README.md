@@ -1,17 +1,25 @@
-<div align="center">🔬 AI Research Collaborator & Paper Recommendation System
+<div align="center">
 
-🧠 Discover Research. Find Connections. Build Collaborations.
+# 🔬 AI Research Collaborator & Paper Recommendation System
 
-An AI-powered research discovery platform using NLP, Semantic Embeddings, Similarity Analysis, and Recommendation Systems to discover relevant research papers and potential collaborators.
+### 🧠 Discover Research. Find Connections. Build Collaborations.
 
-<br>"Python" (https://img.shields.io/badge/Python-3.x-3776AB?style=for-the-badge&logo=python&logoColor=white)
-"FastAPI" (https://img.shields.io/badge/FastAPI-Backend-009688?style=for-the-badge&logo=fastapi&logoColor=white)
-"NLP" (https://img.shields.io/badge/NLP-Semantic%20Search-FF6F00?style=for-the-badge)
-"AI" (https://img.shields.io/badge/AI-Research%20Discovery-8A2BE2?style=for-the-badge)
+An AI-powered research discovery platform using **NLP, Semantic Embeddings, Similarity Analysis, and Recommendation Systems** to discover relevant research papers and potential collaborators.
 
-<br>📚 Research Papers • 👨‍🔬 Researchers • 🧠 Semantic Similarity • 🎯 Recommendations
+<br>
 
-</div>---
+![Python](https://img.shields.io/badge/Python-3.x-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-Backend-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+![NLP](https://img.shields.io/badge/NLP-Semantic%20Search-FF6F00?style=for-the-badge)
+![AI](https://img.shields.io/badge/AI-Research%20Discovery-8A2BE2?style=for-the-badge)
+
+<br>
+
+**📚 Research Papers • 👨‍🔬 Researchers • 🧠 Semantic Similarity • 🎯 Recommendations**
+
+</div>
+
+---
 
 🌟 Overview
 
